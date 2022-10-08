@@ -1,3 +1,6 @@
+import {Icon} from './../../components'
+
+
 const Input = ({ name, label, ...props }) => (
     <div className="flex flex-col">
         <label htmlFor={name} className="text-sm text-bold text-gray-500 mb-2">{label}</label>
@@ -17,6 +20,7 @@ export const Login = () => {
                 
                 <main className="container max-w-xl p-4">
                     <div className="p-4">
+                        <Icon />
                         <h2 className="text-xl font-bold">Entre na sua conta</h2>
                     </div>
 
