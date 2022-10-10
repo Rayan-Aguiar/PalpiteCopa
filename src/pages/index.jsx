@@ -7,6 +7,7 @@ import {
   import { Dashboard } from "./Dashboard";
   import { Home } from "./Home";
   import { Login} from "./Login";
+  import { Profile } from "./Profile";
   import { Signup } from "./Signup";
 
 
@@ -26,6 +27,10 @@ import {
     {
       path: "/dashboard",
       element: <Dashboard />,
+    },
+    {
+      path: "/profile",
+      element: <Profile />,
     },
   ]);
 

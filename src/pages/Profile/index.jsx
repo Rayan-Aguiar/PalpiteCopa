@@ -1,7 +1,9 @@
 import {Icon, Card} from '~/components'
+import { Fragment } from 'react' //Poderia usar também desta forma <> </>
 
-export const Dashboard = () =>(
-    <>
+export const Profile = () =>(
+    <Fragment>
+
         <header className="bg-red-500 text-white">
             <div className="container max-w-3xl  flex justify-between p-4">
                 <img src="/imgs/logo-fundo-vermelho.svg" className="w-28 md:w-40" />
@@ -14,13 +16,16 @@ export const Dashboard = () =>(
         <main className='space-y-6'>
             <section id='header' className="bg-red-500 text-white">
                 <div className='container max-w-3xl space-y-3 p-4'>
-                    <span>Olá Bruno!</span>
-                    <h3 className='text-2xl font-bold'>Qual é o seu palpite?</h3>
+                    <a href="/dashboard">
+                        <Icon name='back' className='w-10'/>
+                    </a>
+                    <h3 className='text-2xl font-bold'>Bruno Bertolini</h3>
                 </div>
             </section>
 
             <section id='content' className='p-4 container max-w-3xl space-y-4 '>
-                
+                <h2 className='text-red-500 font-bold text-xl'>Seus palpites</h2>
+
                 <div className='p-4 flex space-x-4 justify-center items-center'>
                     <Icon name="arrowLeft" className="w-6 text-red-500" />
                     <span className='font-bold'>24 de novembro </span>
@@ -51,5 +56,6 @@ export const Dashboard = () =>(
 
 
         </main>
-    </>
+
+    </Fragment>
 )
