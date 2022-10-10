@@ -1,5 +1,7 @@
-import {Icon, Card} from '~/components'
 import { Fragment } from 'react' //Poderia usar também desta forma <> </>
+
+import {Icon, Card, DateSelect } from '~/components'
+
 
 export const Profile = () =>(
     <Fragment>
@@ -26,12 +28,7 @@ export const Profile = () =>(
             <section id='content' className='p-4 container max-w-3xl space-y-4 '>
                 <h2 className='text-red-500 font-bold text-xl'>Seus palpites</h2>
 
-                <div className='p-4 flex space-x-4 justify-center items-center'>
-                    <Icon name="arrowLeft" className="w-6 text-red-500" />
-                    <span className='font-bold'>24 de novembro </span>
-                    <Icon name="arrowRight" className="w-6 text-red-500" />
-
-                </div>
+                <DateSelect />
                 
                 <div className='space-y-4'>
                     <Card 
