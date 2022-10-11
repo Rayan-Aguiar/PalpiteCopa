@@ -1,0 +1,29 @@
+{
+  "name": "write-file-promise",
+  "version": "1.0.0",
+  "description": "Write a file creating intermediate directories",
+  "main": "index.js",
+  "scripts": {
+    "clean": "rm -rf tmp",
+    "pretest": "npm run clean",
+    "test": "tap test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/piuccio/write-file-promise.git"
+  },
+  "keywords": [
+    "write",
+    "files"
+  ],
+  "author": "Fabio Crisci",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/piuccio/write-file-promise/issues"
+  },
+  "homepage": "https://github.com/piuccio/write-file-promise#readme",
+  "devDependencies": {
+    "eslint": "^3.6.1",
+    "tap": "^7.1.2"
+  }
+}
