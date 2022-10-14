@@ -7,18 +7,35 @@ export const create = async ctx => {
         ctx.status = 400
         return
     }
+    const userId = 'cl97ppt290000kneepj3p68tt'
+    const { gameId } = ctx.request.body
+    const homeTeamScore = parseInt(ctx.request.body.homeTeamScore)
+    const awayTeamScore = parseInt(ctx.request.body.awayTeamScore)
     
     try{
-        const userId = 'cl97ppt290000kneepj3p68tt'
-        const { gameId, homeTeamScore = 0, awayTeamScore = 0 } = ctx.request.body
-        
-        const hunch = await prisma.hunch.upsert({
-            where: { userId, gameId },
-            create: { userId, gameId, homeTeamScore, awayTeamScore},
-            update: { homeTeamScore, awayTeamScore }
-        })
 
+        const [hunch] = await prisma.hunch.findMany({
+            where: { userId, gameId },
+        })
+        
         ctx.body = hunch
+            ? await prisma.hunch.update({
+                where: {
+                    id: hunch.id
+                },
+                data: {
+                    homeTeamScore,
+                    awayTeamScore
+                }
+            })
+            : await prisma.hunch.create({
+                data:{
+                    userId,
+                    gameId,
+                    homeTeamScore,
+                    awayTeamScore
+                }
+            })
         
     } catch(error){
         console.log(error)
