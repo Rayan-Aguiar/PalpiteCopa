@@ -1,14 +1,13 @@
 import Router from '@koa/router'
-import { PrismaClient } from '@prisma/client'
 
-const prisma = new PrismaClient()
+import * as users from './app/users/index.js'
+import * as hunches from './app/hunches/index.js'
+
 
 export const router = new Router()
 
-router.get('/', async ctx => {
-    ctx.body = {ola: "mundo"}
-})
+router.get('/users', users.list)
+router.post('/users', users.create)
 
-router.get('/users', async ctx => {
-    ctx.body = {ola: "Users"}
-})
+//hunchesrouter.get('/hunches', hunches.list)
+router.post('/hunches', hunches.create)
