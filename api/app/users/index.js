@@ -1,17 +1,21 @@
 import { PrismaClient } from '@prisma/client'
+import bcrypt from 'bcrypt'
+
 const prisma = new PrismaClient()
 
 //Criar usuários no BD
 export const create = async ctx => {
+    const password = await bcrypt.hash(ctx.request.body.password, 10)
     const data = {
         name: ctx.request.body.name,
         username: ctx.request.body.username,
         email: ctx.request.body.email,
-        password: ctx.request.body.password,
+        password,
     }
 
     try{
-        const user = await prisma.user.create({ data })
+        const { password, ...user} = await prisma.user.create({ data })
+        
         ctx.body = user
         ctx.status = 201
     } catch(error){
@@ -22,7 +26,7 @@ export const create = async ctx => {
 
 }
 
-//Listar Usuários
+/* //Listar Usuários
 export const list = async ctx =>{
     try{
         const users = await prisma.user.findMany()
@@ -33,4 +37,29 @@ export const list = async ctx =>{
         ctx.body = error
         ctx.status = 500
     }
+} */
+
+
+export const login = async ctx => {
+    const [type, token] = ctx.headers.authorization.split(" ")
+    const [email, plainTextPassword] = atob(token).split(":")
+
+    const {password, ...user} = await prisma.user.findUnique({
+        where: { email }
+    })
+
+    if (!user) {
+        ctx.status = 404
+        return
+    }
+
+    const passwordMatch = await bcrypt.compare(plainTextPassword, password)
+
+
+    if(!passwordMatch) {
+        ctx.status = 404
+        return
+    }
+
+    ctx.body = user
 }
