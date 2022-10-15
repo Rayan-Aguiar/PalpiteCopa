@@ -32,9 +32,6 @@ export const Signup = () => {
         },
         validationSchema
     })
-
-    console.log(formik.errors)
-
     
     return(
         <div>
@@ -99,8 +96,8 @@ export const Signup = () => {
                         />
 
                         <button type='submit' className="block w-full text-center text-white bg-red-500 px-6 py-3 rounded-xl disabled:opacity-50" 
-                        disabled={!formik.isValid}>
-                            Criar minha conta
+                        disabled={!formik.isValid || formik.isSubmitting}>
+                            {formik.isSubmitting ? 'Carregando...' : 'Criar minha conta'}
                         </button>
                     </form>
 

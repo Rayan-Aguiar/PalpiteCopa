@@ -1,3 +1,5 @@
+import { useLocalStorage } from 'react-use'
+
 import {
     createBrowserRouter,
     RouterProvider,
@@ -35,7 +37,8 @@ import {
   ]);
 
   
-  export const Router = () =>(
-    <RouterProvider router={router} />
+  export const Router = () =>{
 
-  )
+   return <RouterProvider router={router} />
+
+  }
