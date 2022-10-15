@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client'
+import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 
 const prisma = new PrismaClient()
@@ -44,22 +45,34 @@ export const login = async ctx => {
     const [type, token] = ctx.headers.authorization.split(" ")
     const [email, plainTextPassword] = atob(token).split(":")
 
-    const {password, ...user} = await prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
         where: { email }
     })
 
-    if (!user) {
+    if (!user){
         ctx.status = 404
         return
     }
 
-    const passwordMatch = await bcrypt.compare(plainTextPassword, password)
+    const passwordMatch = await bcrypt.compare(plainTextPassword, user.password)
 
-
-    if(!passwordMatch) {
+    if (!passwordMatch) {
         ctx.status = 404
         return
     }
 
-    ctx.body = user
+    const { password, ...result } = user
+
+    const accessToken = jwt.sign({
+        sub: user.id,
+        name: user.name,
+        expiresIn: "7d" //expira a sessão
+    }, process.env.JWT_SECRET)
+
+
+    ctx.body = {
+        user: result,
+        accessToken
+    }
+    
 }
