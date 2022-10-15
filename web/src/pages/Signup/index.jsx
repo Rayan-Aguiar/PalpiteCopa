@@ -1,6 +1,8 @@
 import axios from 'axios'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
+import { Navigate } from 'react-router-dom'
+import { useLocalStorage } from 'react-use'
 
 import {Icon, Input} from '~/components'
 
@@ -13,6 +15,8 @@ const validationSchema = yup.object().shape({
 })
 
 export const Signup = () => {
+    const [auth, setAuth] = useLocalStorage('auth', {})
+    
     const formik = useFormik({
         onSubmit: async (values) => {            
             const res = await axios({
@@ -32,7 +36,11 @@ export const Signup = () => {
         },
         validationSchema
     })
-    
+
+    if(auth?.user?.id){
+        return <Navigate to="/dashboard" replace={true} />
+    }
+
     return(
         <div>
                 <header className="p-4 border-b border-red-300">
