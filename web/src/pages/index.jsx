@@ -31,7 +31,7 @@ import {
       element: <Dashboard />,
     },
     {
-      path: "/profile",
+      path: "/:username",
       element: <Profile />,
     },
   ]);
