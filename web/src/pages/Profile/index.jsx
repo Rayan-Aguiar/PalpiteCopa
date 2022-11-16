@@ -1,5 +1,9 @@
-import { useLocalStorage } from 'react-use'
+import { useEffect, useState } from 'react'
+import { useAsyncFn, useLocalStorage, useAsync } from 'react-use'
 import { Navigate } from 'react-router-dom'
+import axios from 'axios'
+import { format, formatISO} from 'date-fns'
+
 
 import { Fragment } from 'react' //Poderia usar também desta forma <> </>
 
@@ -7,13 +11,51 @@ import {Icon, Card, DateSelect } from '~/components'
 
 
 export const Profile = () =>{
-    const [auth, setAuth] = useLocalStorage('auth', {})
+    const [currentDate, setDate] = useState(formatISO(new Date(2022, 10, 20)))    
+    const [auth ] = useLocalStorage('auth', {})
+
+    const [hunches, fetchHunches] = useAsyncFn(async () => {
+        const res = await axios({
+            method: 'get',
+            baseURL: 'http://localhost:3000',
+            url: `/${auth.user.username}`,
+            
+        })
+
+        const hunches = res.data.reduce((acc, hunch) => {
+            acc[hunch.gameId] = hunch
+            return acc
+        }, {})
+
+        return hunches
+    })
     
-    const logout = () => setAuth({})
+    
+    const [games, fetchGames] = useAsyncFn(async(params) => {
+        const res = await axios({
+            method: 'get',
+            baseURL: 'http://localhost:3000',
+            url: '/games',
+            params
+    })
+    return res.data
+    })
+
+    const isLoading = games.loading || hunches.loading
+    const hasError = games.error || hunches.error
+    const isDone = !isLoading && !hasError
+
+    useEffect(() => {
+        fetchHunches()
+    }, [])  
+
+    useEffect(() =>{
+        fetchGames({gameTime: currentDate })        
+    }, [currentDate])
+
     if(!auth?.user?.id){
         return <Navigate to="/" replace={true} />
     }
-
 
     return(
         <Fragment>
@@ -21,7 +63,7 @@ export const Profile = () =>{
             <header className="bg-red-500 text-white">
                 <div className="container max-w-3xl  flex justify-between p-4">
                     <img src="/imgs/logo-fundo-vermelho.svg" className="w-28 md:w-40" />
-                    <div onClick={logout} className="p-2 cursor-pointer">
+                    <div onClick={() => setAuth({})} className="p-2 cursor-pointer">
                         Sair
                     </div>
                 </div>
@@ -33,34 +75,35 @@ export const Profile = () =>{
                         <a href="/dashboard">
                             <Icon name='back' className='w-10'/>
                         </a>
-                        <h3 className='text-2xl font-bold'>Bruno Bertolini</h3>
+                        <h3 className='text-2xl font-bold'>{auth.user.name}</h3>
                     </div>
                 </section>
 
                 <section id='content' className='p-4 container max-w-3xl space-y-4 '>
                     <h2 className='text-red-500 font-bold text-xl'>Seus palpites</h2>
 
-                    <DateSelect />
+                    <DateSelect currentDate={currentDate} onChange={setDate}/>
                     
                     <div className='space-y-4'>
-                        <Card 
-                        timeA = {{slug: 'sui'}}
-                        timeB = {{slug: 'cam'}}
-                        match = {{time: '7:00'}}
-                        />
+                        {isLoading && 'Carregando jogos...'}
+                        {hasError && 'Ops! Algo deu errado.'}
 
-                        <Card 
-                        timeA = {{slug: 'por'}}
-                        timeB = {{slug: 'gan'}}
-                        match = {{time: '7:00'}}
-                        />
+                       
 
-                        <Card 
-                        timeA = {{slug: 'cor'}}
-                        timeB = {{slug: 'uru'}}
-                        match = {{time: '7:00'}}
-                        />
+                        {isDone && games.value?.map(game =>(
+                            <Card
+                            key={game.id}
+                            gameId={game.id} 
+                            homeTeam = {game.homeTeam}
+                            awayTeam = {game.awayTeam}
+                            gameTime = {format(new Date(game.gameTime), 'H:mm')}
+                            homeTeamScore = { hunches?.value?.[game.id]?.homeTeamScore || '' }
+                            awayTeamScore = { hunches?.value?.[game.id]?.awayTeamScore || '' }
+                            disabled={true}
+                            />
+                        ))}
                     </div>
+                    
                 </section>
 
 
